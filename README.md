@@ -1,9 +1,16 @@
-# Equity Research Report Generator
+# Geyser - Equity Research Report Generator
 
-A comprehensive Python tool for generating institutional-quality equity research reports. Performs fundamental analysis, peer comparison, sentiment analysis, and produces professional investment recommendations.
+[![CI](https://github.com/matthudson1223/geyser/workflows/CI/badge.svg)](https://github.com/matthudson1223/geyser/actions)
+[![codecov](https://codecov.io/gh/matthudson1223/geyser/branch/main/graph/badge.svg)](https://codecov.io/gh/matthudson1223/geyser)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-## Features
+A comprehensive, production-ready Python tool for generating institutional-quality equity research reports. Performs fundamental analysis, peer comparison, sentiment analysis, and produces professional investment recommendations.
 
+## ✨ Features
+
+### Core Analysis
 - **Comprehensive Data Collection**: Fetches company data, historical prices, and financial statements via yfinance
 - **Financial Analysis**: Calculates 40+ financial ratios across valuation, profitability, growth, and health metrics
 - **Peer Comparison**: Automatically identifies and compares against industry peers
@@ -12,22 +19,57 @@ A comprehensive Python tool for generating institutional-quality equity research
 - **Automated Scoring**: Quantitative investment scoring system with weighted categories
 - **Full Research Reports**: Produces markdown reports with executive summary, analysis, and recommendations
 
-## Quick Start
+### New in v1.0.0 🎉
+- **🔧 Environment Configuration**: Support for `.env` files and YAML configuration
+- **📝 Comprehensive Logging**: Colored console output and file logging with multiple levels
+- **💾 Intelligent Caching**: Disk-based caching with TTL for improved performance
+- **✅ Input Validation**: Robust validation and sanitization of all inputs
+- **🧪 Test Coverage**: Comprehensive test suite with pytest (80%+ coverage)
+- **🚀 CI/CD Pipeline**: Automated testing, linting, and security scanning
+- **📊 Progress Indicators**: Real-time progress bars for long-running operations
+- **🎨 Enhanced CLI**: Advanced command-line interface with argparse
+- **⚡ Performance**: Parallel peer data fetching for faster analysis
+- **🔒 Security**: Input validation, security scanning, and best practices
+
+## 🚀 Quick Start
 
 ### Installation
 
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/matthudson1223/geyser.git
 cd geyser
+
+# Create virtual environment (recommended)
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
+
+# Copy environment template
+cp .env.example .env
 ```
 
-### Usage
+### Basic Usage
 
-#### Option 1: Command Line
+#### Enhanced CLI (Recommended)
+
+```bash
+# Analyze default ticker with progress bars
+python run_analysis_enhanced.py NVDA
+
+# Analyze with custom options
+python run_analysis_enhanced.py AAPL --no-cache --log-level DEBUG
+
+# Get help
+python run_analysis_enhanced.py --help
+
+# Clear cache
+python run_analysis_enhanced.py --clear-cache
+```
+
+#### Original CLI
 
 ```bash
 # Analyze default ticker (NVDA)
@@ -35,19 +77,31 @@ python run_analysis.py
 
 # Analyze any ticker
 python run_analysis.py AAPL
-python run_analysis.py MSFT
-python run_analysis.py GOOGL
 ```
 
-#### Option 2: Jupyter Notebook
+#### Using Makefile
 
-Open `equity_research_report.ipynb` and change the `TICKER` variable in the first code cell:
+```bash
+# Run with default ticker
+make run
+
+# Run tests
+make test
+
+# Format code
+make format
+
+# Run all checks
+make check
+```
+
+#### Jupyter Notebook
+
+Open `equity_research_report.ipynb` and change the `TICKER` variable:
 
 ```python
 TICKER = "NVDA"  # Change this to any valid stock ticker
 ```
-
-Then run all cells to generate the complete analysis.
 
 #### Option 3: Python Script
 
@@ -62,7 +116,45 @@ print(f"Recommendation: {results['scores']['recommendation']}")
 print(f"Score: {results['scores']['total_score']}/10")
 ```
 
-## Configuration
+## ⚙️ Configuration
+
+Geyser supports multiple configuration methods with priority: Environment Variables > YAML Config > Defaults
+
+### Environment Variables (.env)
+
+Create a `.env` file in the project root (copy from `.env.example`):
+
+```bash
+# Default settings
+DEFAULT_TICKER=NVDA
+CACHE_ENABLED=true
+CACHE_TTL_HOURS=24
+LOG_LEVEL=INFO
+
+# Customize analysis parameters
+YEARS_OF_HISTORY=5
+CHART_PRICE_YEARS=2
+```
+
+### YAML Configuration
+
+Create a `config.yaml` file for advanced configuration:
+
+```yaml
+default_ticker: AAPL
+cache_enabled: true
+cache_ttl_hours: 12
+log_level: DEBUG
+parallel_peer_fetch: true
+max_workers: 10
+```
+
+Then run with:
+```bash
+python run_analysis_enhanced.py --config config.yaml
+```
+
+### Legacy Configuration
 
 Edit `src/config.py` to customize:
 
@@ -196,10 +288,117 @@ For tickers not in the mapping, peers are dynamically selected based on sector.
 ============================================================
 ```
 
-## Disclaimer
+## 🧪 Development
+
+### Setup Development Environment
+
+```bash
+# Clone and enter directory
+git clone https://github.com/matthudson1223/geyser.git
+cd geyser
+
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate
+
+# Install all dependencies
+make install-dev
+
+# Set up pre-commit hooks
+pre-commit install
+```
+
+### Running Tests
+
+```bash
+# Run all tests with coverage
+make test
+
+# Run specific test file
+pytest tests/test_validators.py -v
+
+# Run tests in watch mode
+pytest-watch
+```
+
+### Code Quality
+
+```bash
+# Format code
+make format
+
+# Run linters
+make lint
+
+# Run all checks
+make check
+
+# Security scanning
+make security
+```
+
+### Project Structure
+
+```
+geyser/
+├── src/                          # Source code
+│   ├── cache_manager.py         # Caching system
+│   ├── config_loader.py         # Configuration management
+│   ├── data_collector.py        # Data fetching
+│   ├── exceptions.py            # Custom exceptions
+│   ├── financial_analysis.py    # Financial metrics
+│   ├── logger.py                # Logging setup
+│   ├── peer_comparison.py       # Peer analysis
+│   ├── report_generator.py      # Report generation
+│   ├── sentiment_analysis.py    # Sentiment scoring
+│   ├── validators.py            # Input validation
+│   └── visualizations.py        # Chart generation
+├── tests/                        # Test suite
+├── docs/                         # Documentation
+├── .github/workflows/            # CI/CD pipelines
+├── run_analysis.py              # Original CLI
+├── run_analysis_enhanced.py     # Enhanced CLI
+└── Makefile                      # Development tasks
+```
+
+## 📚 Documentation
+
+- **[Architecture Overview](docs/ARCHITECTURE.md)**: System design and component descriptions
+- **[Contributing Guide](docs/CONTRIBUTING.md)**: How to contribute to the project
+- **[Security Policy](SECURITY.md)**: Security guidelines and reporting
+- **[Changelog](CHANGELOG.md)**: Version history and changes
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](docs/CONTRIBUTING.md) for details.
+
+Quick contribution steps:
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Run tests (`make test`)
+5. Commit your changes (`git commit -m 'feat: add amazing feature'`)
+6. Push to the branch (`git push origin feature/amazing-feature`)
+7. Open a Pull Request
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## ⚠️ Disclaimer
 
 This tool is for informational and educational purposes only. It does not constitute financial advice, investment recommendations, or an offer to buy or sell securities. Always conduct your own research and consult with a qualified financial advisor before making investment decisions.
 
-## License
+## 🙏 Acknowledgments
 
-MIT License
+- Data provided by [Yahoo Finance](https://finance.yahoo.com/) via the `yfinance` library
+- Built with Python, pandas, NumPy, Plotly, and other amazing open-source tools
+
+## 📬 Support
+
+- **Issues**: [GitHub Issues](https://github.com/matthudson1223/geyser/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/matthudson1223/geyser/discussions)
+
+---
+
+**Made with ❤️ by the Geyser community**
